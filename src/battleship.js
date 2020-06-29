@@ -1,13 +1,5 @@
 const createBoard = (boardSize, player) => {
-  let board = [];
-  // Create 2 tables 10 x 10
-  for (let i = 0; i < boardSize; i++) {
-    board[i] = [];
-    for (let j = 0; j < boardSize; j++) {
-      board[i][j] = [];
-    }
-  }
-
+  let rowPos = 1;
   $("body").append(
     $(document.createElement("div")).attr({
       class: "grid-container",
@@ -15,26 +7,34 @@ const createBoard = (boardSize, player) => {
     })
   );
 
-  // $(".grid-container").css(
-  //   "grid-template-columns",
-  //   `repeat(${boardSize}, 50px)`
-  // );
   for (let i = 1; i <= boardSize; i++) {
+    let colPos = 65;
+
     for (let j = 1; j <= boardSize; j++) {
       $(`#${player}-grid`).append(
         $(document.createElement("div"))
           .attr({
             class: "grid-item",
-            id: `player${player}-item${i}`,
+            id: `${String.fromCharCode(colPos)}${rowPos}`,
           })
           .css({
             gridColumn: j,
             gridRow: i,
           })
       );
+      colPos++;
     }
+    rowPos++;
   }
 };
+
+//
+document.addEventListener("click", (e) => {
+  console.log();
+  if (e.target.className === "grid-item") {
+    console.log("squareClicked: ", e.target.id);
+  }
+});
 
 // const takeShot = (playerBoard, guess) => {
 //   return (playerBoard[guess[0]][guess[1]] = "x");
