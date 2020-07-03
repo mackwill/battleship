@@ -1,4 +1,10 @@
 body {
+  text-align: center;
+}
+
+.total-grid-wrapper {
+  margin: auto;
+  width: 80%;
   display: flex;
   justify-content: space-around;
 }
@@ -19,4 +25,29 @@ body {
 
 .grid-item:hover {
   background-color: red;
+}
+
+#div1 {
+  height: 20px;
+  width: 20px;
+  background-color: green;
+}
+
+.ship-wrapper {
+  display: flex;
+  margin: 2%;
+}
+
+.ship {
+  margin: 2%;
+}
+
+.shipElem {
+  height: 30px;
+  width: 30px;
+  background-color: orange;
+}
+
+.shipElem:hover {
+  background-color: purple;
 }

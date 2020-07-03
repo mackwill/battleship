@@ -1,21 +1,34 @@
-const createBoard = (boardSize, player) => {
-  let rowPos = 1;
+// const { player1ships, } = require("./constants");
+
+const createTotalGridDiv = () => {
   $("body").append(
     $(document.createElement("div")).attr({
+      class: "total-grid-wrapper",
+    })
+  );
+};
+
+const createBoard = (boardSize, player) => {
+  let rowPos = 1;
+  $(".total-grid-wrapper").append(
+    $(document.createElement("div")).attr({
       class: "grid-container",
-      id: `${player}-grid`,
+      id: `player${player}-grid`,
     })
   );
 
   for (let i = 1; i <= boardSize; i++) {
     let colPos = 65;
+    let colNum = 1;
 
     for (let j = 1; j <= boardSize; j++) {
-      $(`#${player}-grid`).append(
+      $(`#player${player}-grid`).append(
         $(document.createElement("div"))
           .attr({
             class: "grid-item",
             id: `${String.fromCharCode(colPos)}${rowPos}`,
+            row: colNum,
+            col: rowPos,
           })
           .css({
             gridColumn: j,
@@ -28,70 +41,59 @@ const createBoard = (boardSize, player) => {
   }
 };
 
-//
-document.addEventListener("click", (e) => {
-  console.log();
-  if (e.target.className === "grid-item") {
-    console.log("squareClicked: ", e.target.id);
-  }
+const createShipDiv = () => {
+  $(".total-grid-wrapper").after(
+    $(document.createElement("div"))
+      .attr({
+        class: "ship-wrapper",
+      })
+      .css({
+        width: "90%",
+      })
+  );
+};
+
+$(document).on("click", ".shipElem", (e) => {
+  let clicks = 0;
+  $(document).on("click", ".grid-item", (el) => {
+    console.log("clicks: ", clicks);
+    if (clicks === 0) {
+      $(`#${el.target.id}`).css({ backgroundColor: "orange" });
+      $(`#${e.target.id}`).css({ display: "none" });
+    }
+    clicks++;
+  });
 });
 
-// const takeShot = (playerBoard, guess) => {
-//   return (playerBoard[guess[0]][guess[1]] = "x");
-// };
+const createShips = (shipName, shipLength) => {
+  $(".ship-wrapper").append(
+    $(document.createElement("div")).attr({
+      class: `${shipName}-wrapper ship`,
+    })
+  );
 
-// const findShipLength = (shipType) => {
-//   switch (shipType) {
-//     case "carrier":
-//       return 5;
-//     case "battleship":
-//       return 4;
-//     case "cruiser":
-//     case "submarine":
-//       return 3;
-//     case "destroyer":
-//       return 2;
-//   }
-// };
+  for (let i = 1; i <= shipLength; i++) {
+    $(`.${shipName}-wrapper`).append(
+      $(document.createElement("div")).attr({
+        class: "shipElem",
+        id: `${shipName}-${i}`,
+      })
+    );
+  }
+};
 
-// const findEndCord = (startCoord, shipDirection, shipLength) => {
-//   let xCord = startCoord[0];
-//   let yCord = startCoord[1];
+const mainFunction = function () {
+  const player1ships = {
+    cruiser: [],
+  };
 
-//   switch (shipDirection) {
-//     case "N":
-//       yCord += shipLength;
-//       break;
-//     case "S":
-//       yCord -= shipLength;
-//       break;
-//     case "E":
-//       xCord += shipLength;
-//       break;
-//     case "W":
-//       xCord -= shipLength;
-//   }
-
-//   return [xCord, yCord];
-// };
-
-// const placeShip = (shipType, start, endCoord, playerBoard, player) => {
-//   console.log(
-//     `Player ${player} has placed their ${shipType} on squares [${start}]`
-//   );
-
-//   // Define the positions that the ship takes up
-// };
-
-// const battleship = () => {
-//   const player1Board = createBoard(10);
-//   const player2Board = createBoard(10);
-
-//   //Place a ship
-//   let endCoord = findEndCord([5, 4], "N");
-
-//   takeShot(player1Board, [5, 4]);
-//   console.log(player1Board);
-// };
-
-// battleship();
+  createTotalGridDiv();
+  createBoard(10, 1);
+  createBoard(10, 2);
+  createShipDiv();
+  createShips("carrier", 5);
+  createShips("battleship", 4);
+  createShips("cruiser", 3);
+  createShips("submarine", 3);
+  createShips("destroyer", 2);
+};
