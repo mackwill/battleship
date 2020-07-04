@@ -1,15 +1,14 @@
 import { createTotalGridDiv, createBoard } from "./components/makeBoard.js";
 import { createShipDiv, createShips } from "./components/ships.js";
 
-$(document).on("click", ".shipElem", (e) => {
-  let clicks = 0;
-  $(document).on("click", ".grid-item", (el) => {
-    console.log("clicks: ", clicks);
-    if (clicks === 0) {
-      $(`#${el.target.id}`).css({ backgroundColor: "orange" });
+$(document).on("click", ".carrier-wrapper", (e) => {
+  $(document).one("click", ".grid-item", (el) => {
+    if ($(`#${el.target.id}`).attr("filled") === "false") {
+      $(`#${el.target.id}`)
+        .attr("filled", "true")
+        .css({ backgroundColor: "orange" });
       $(`#${e.target.id}`).css({ display: "none" });
     }
-    clicks++;
   });
 });
 

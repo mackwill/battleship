@@ -27,6 +27,7 @@ const createBoard = (boardSize, player) => {
             id: `${String.fromCharCode(colPos)}${rowPos}`,
             row: colNum,
             col: rowPos,
+            filled: false,
           })
           .css({
             gridColumn: j,

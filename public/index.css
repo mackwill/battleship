@@ -42,12 +42,12 @@ body {
   margin: 2%;
 }
 
-.shipElem {
+.ship-elem {
   height: 30px;
   width: 30px;
   background-color: orange;
 }
 
-.shipElem:hover {
+.ship-elem:hover {
   background-color: purple;
 }

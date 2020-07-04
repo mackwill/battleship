@@ -20,7 +20,7 @@ const createShips = (shipName, shipLength) => {
   for (let i = 1; i <= shipLength; i++) {
     $(`.${shipName}-wrapper`).append(
       $(document.createElement("div")).attr({
-        class: "shipElem",
+        class: `${shipName}-elem ship-elem`,
         id: `${shipName}-${i}`,
       })
     );
