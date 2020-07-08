@@ -8,11 +8,14 @@ const createTotalGridDiv = () => {
 
 const createBoard = (boardSize, player) => {
   let rowPos = 1;
-  $(".total-grid-wrapper").append(
+  $(`#player${player}-title`).after(
     $(document.createElement("div")).attr({
       class: "grid-container",
       id: `player${player}-grid`,
     })
+    // .css({
+    //   "justify-content": "center",
+    // })
   );
 
   for (let i = 1; i <= boardSize; i++) {

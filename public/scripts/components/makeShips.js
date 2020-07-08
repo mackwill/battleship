@@ -1,5 +1,5 @@
-const createShipDiv = () => {
-  $(".total-grid-wrapper").after(
+const createShipDiv = (player) => {
+  $(`#player${player}-grid`).after(
     $(document.createElement("div"))
       .attr({
         class: "ship-wrapper",

@@ -9,6 +9,11 @@ body {
   justify-content: space-around;
 }
 
+.card-body {
+  text-align: center;
+  margin: auto;
+}
+
 .grid-container {
   width: 400px;
   height: 400px;
@@ -27,15 +32,10 @@ body {
   background-color: red;
 }
 
-#div1 {
-  height: 20px;
-  width: 20px;
-  background-color: green;
-}
-
 .ship-wrapper {
   display: flex;
   margin: 2%;
+  justify-content: space-around;
 }
 
 .ship {
@@ -46,6 +46,8 @@ body {
   height: 30px;
   width: 30px;
   background-color: orange;
+  border: 1px solid orange;
+  border-radius: 50%;
 }
 
 .ship-elem:hover {

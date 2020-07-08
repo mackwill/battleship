@@ -2,6 +2,7 @@ export class Ship {
   constructor(name, size) {
     this.name = name;
     this.sunk = false;
+    this.positionComplete = false;
     this.position = {};
     this.size = size;
     this.onClick = this.onClick.bind(this);
@@ -29,7 +30,12 @@ export class Ship {
     }
   };
 
-  fullyPlaced = () => {};
+  fullyPlaced = (e) => {
+    if (Object.keys(this.position).length === this.size) {
+      $(`.${this.name}-wrapper`).attr({ fullyPlaced: "true" });
+      console.log("fullyplaced");
+    }
+  };
 
   onClick(event) {
     $(document).on("click", ".ship", (event) => {
@@ -66,7 +72,8 @@ export class Ship {
                 .css({ backgroundColor: "orange" });
               this.position[e.target.id] = false;
 
-              $(`#${event.target.id}`).css({ display: "none" });
+              $(`#${event.target.id}`).css({ opacity: "0.5" });
+              this.fullyPlaced();
               clicks++;
             }
           } else {
@@ -75,7 +82,7 @@ export class Ship {
               .css({ backgroundColor: "orange" });
             this.position[e.target.id] = false;
 
-            $(`#${event.target.id}`).css({ display: "none" });
+            $(`#${event.target.id}`).css({ opacity: "0.5" });
             clicks++;
           }
         }
