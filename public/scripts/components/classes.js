@@ -5,9 +5,6 @@ export class Ship {
     this.position = {};
     this.size = size;
     this.onClick = this.onClick.bind(this);
-    // this.addEventListener("click", this.onClick.bind(this));
-    // this.addEventListener
-    console.log("this: ", this);
   }
 
   createShips = () => {
@@ -15,7 +12,6 @@ export class Ship {
       $(document.createElement("div")).attr({
         class: `${this.name}-wrapper ship`,
         id: `${this.name}-id`,
-        // onclick: `${this.onClick}`,
       })
     );
 
@@ -28,15 +24,15 @@ export class Ship {
         $(document.createElement("div")).attr({
           class: `${this.name}-elem ship-elem`,
           id: `${this.name}-${i}`,
-          // onclick: `${this.onClick}`,
         })
       );
     }
   };
 
+  fullyPlaced = () => {};
+
   onClick(event) {
     $(document).on("click", ".ship", (event) => {
-      // let currentShip = this.name;
       let clicks = Object.keys(this.position).length;
       $(document).one("click", ".grid-item", (e) => {
         if ($(`#${e.target.id}`).attr("filled") === "false") {
@@ -62,8 +58,8 @@ export class Ship {
             let totalColDif = Math.abs(firstCol - currentCol);
 
             if (
-              (rowDif < this.size && colDif === 0 && totalRowDif < this.size) ||
-              (colDif < this.size && rowDif === 0 && totalColDif < this.size)
+              (totalColDif === 0 && colDif === 0 && totalRowDif < this.size) ||
+              (totalRowDif === 0 && rowDif === 0 && totalColDif < this.size)
             ) {
               $(`#${e.target.id}`)
                 .attr("filled", "true")
@@ -87,5 +83,3 @@ export class Ship {
     });
   }
 }
-
-// module.exports = Ship

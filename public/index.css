@@ -51,3 +51,8 @@ body {
 .ship-elem:hover {
   background-color: purple;
 }
+
+.guess-wrapper {
+  display: flex;
+  justify-content: center;
+}

@@ -1,7 +1,7 @@
 import { createTotalGridDiv, createBoard } from "./components/makeBoard.js";
 // import { createShipDiv, createShips } from "./components/ships.js";
 import { createShipDiv } from "./components/ships.js";
-
+import { createGuessInput } from "./components/guessComponent.js";
 // import { PLAYER1SHIPS } from "./components/constants.js";
 import { Ship } from "./components/classes.js";
 
@@ -10,6 +10,7 @@ const mainFunction = function () {
   createBoard(10, 1);
   createBoard(10, 2);
   createShipDiv();
+
   const carrier = new Ship("carrier", 5);
   carrier.createShips();
   const battleship = new Ship("battleship", 4);
@@ -20,8 +21,6 @@ const mainFunction = function () {
   submarine.createShips();
   const destroyer = new Ship("destroyer", 2);
   destroyer.createShips();
-
-  console.log("carrier: ", carrier);
 };
 
 mainFunction();
