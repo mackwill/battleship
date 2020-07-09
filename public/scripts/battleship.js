@@ -1,9 +1,41 @@
 import { createTotalGridDiv, createBoard } from "./components/makeBoard.js";
-// import { createShipDiv, createShips } from "./components/ships.js";
 import { createShipDiv } from "./components/makeShips.js";
-import { createGuessInput } from "./components/guessComponent.js";
-// import { PLAYER1SHIPS } from "./components/constants.js";
-import { Ship } from "./components/classes.js";
+import { PLAYER1, PLAYER2 } from "./components/constants.js";
+import { Ship, Player } from "./components/classes.js";
+
+const placePlayer1Ships = () => {
+  for (let ship in PLAYER1.ships) {
+    PLAYER1.ships[ship].createShips();
+  }
+};
+const placePlayer2Ships = () => {
+  for (let ship in PLAYER2.ships) {
+    PLAYER2.ships[ship].createShips();
+  }
+};
+
+const click1Handler = () => {
+  for (let ship in PLAYER1.ships) {
+    if (PLAYER1.ships[ship].positionComplete === false) {
+      return;
+    }
+  }
+  placePlayer2Ships();
+  PLAYER1.fullyPlaced = true;
+  return;
+};
+
+const createGuessInput = () => {
+  $(".ship-wrapper").after(
+    ($(
+      document.createElement("div")
+    ).innerHTML = `<button type='button' class="btn btn-primary" id="submit-button">Primary </button> `)
+  );
+
+  document
+    .getElementById(`submit-button`)
+    .addEventListener("click", click1Handler);
+};
 
 const mainFunction = function () {
   createTotalGridDiv();
@@ -12,18 +44,9 @@ const mainFunction = function () {
   createShipDiv(1);
   createShipDiv(2);
 
-  const carrier = new Ship("carrier", 5);
-  carrier.createShips();
-  const battleship = new Ship("battleship", 4);
-  battleship.createShips();
-  const cruiser = new Ship("cruiser", 3);
-  cruiser.createShips();
-  const submarine = new Ship("submarine", 3);
-  submarine.createShips();
-  const destroyer = new Ship("destroyer", 2);
-  destroyer.createShips();
-  const player1 = [carrier, battleship, cruiser, submarine, destroyer];
-  createGuessInput(player1);
+  placePlayer1Ships();
+
+  createGuessInput();
 };
 
 mainFunction();

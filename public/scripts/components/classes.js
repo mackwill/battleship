@@ -1,5 +1,12 @@
+export class Player {
+  constructor(player) {
+    (this.player = player), (this.fullyPositioned = false);
+  }
+}
+
 export class Ship {
-  constructor(name, size) {
+  constructor(name, size, player) {
+    this.player = player;
     this.name = name;
     this.sunk = false;
     this.positionComplete = false;
@@ -9,22 +16,22 @@ export class Ship {
   }
 
   createShips = () => {
-    $(".ship-wrapper").append(
+    $(`.player${this.player}-ship-wrapper`).append(
       $(document.createElement("div")).attr({
-        class: `${this.name}-wrapper ship`,
-        id: `${this.name}-id`,
+        class: `${this.name}-wrapper ship-player${this.player}`,
+        id: `${this.name}-wrapper-${this.player}`,
       })
     );
 
     document
-      .getElementById(`${this.name}-id`)
+      .getElementById(`${this.name}-wrapper-${this.player}`)
       .addEventListener("click", this.onClick);
 
-    for (let i = 1; i <= this.size; i++) {
-      $(`.${this.name}-wrapper`).append(
+    for (let i = 0; i < this.size; i++) {
+      $(`#${this.name}-wrapper-${this.player}`).append(
         $(document.createElement("div")).attr({
           class: `${this.name}-elem ship-elem`,
-          id: `${this.name}-${i}`,
+          id: `${this.name}-${i + 1}`,
         })
       );
     }
@@ -32,13 +39,12 @@ export class Ship {
 
   fullyPlaced = (e) => {
     if (Object.keys(this.position).length === this.size) {
-      $(`.${this.name}-wrapper`).attr({ fullyPlaced: "true" });
-      console.log("fullyplaced");
+      this.positionComplete = true;
     }
   };
 
   onClick(event) {
-    $(document).on("click", ".ship", (event) => {
+    $(document).on("click", `.ship-player${this.player}`, (event) => {
       let clicks = Object.keys(this.position).length;
       $(document).one("click", ".grid-item", (e) => {
         if ($(`#${e.target.id}`).attr("filled") === "false") {

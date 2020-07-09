@@ -2,7 +2,7 @@ const createShipDiv = (player) => {
   $(`#player${player}-grid`).after(
     $(document.createElement("div"))
       .attr({
-        class: "ship-wrapper",
+        class: `ship-wrapper player${player}-ship-wrapper`,
       })
       .css({
         width: "90%",
