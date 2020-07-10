@@ -31,7 +31,7 @@ export class Ship {
       $(`#${this.name}-wrapper-${this.player}`).append(
         $(document.createElement("div")).attr({
           class: `${this.name}-elem ship-elem`,
-          id: `${this.name}-${i + 1}`,
+          id: `${this.name}-${i + 1}-player${this.player}`,
         })
       );
     }
