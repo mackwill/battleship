@@ -47,7 +47,7 @@ export class Ship {
     $(document).on("click", `#${this.name}-wrapper-${this.player}`, (event) => {
       let clicks = Object.keys(this.position).length;
       $(document).one("click", `.grid-item-player${this.player}`, (e) => {
-        console.log("e target", e.target);
+        // console.log("e target", e.target);
         if ($(`#${e.target.id}`).attr("filled") === "false") {
           if (clicks > 0) {
             let firstRow = Object.keys(this.position)[0]
@@ -79,7 +79,11 @@ export class Ship {
                 .css({ backgroundColor: "orange" });
               this.position[e.target.id] = false;
 
-              $(`#${event.target.id}`).css({ opacity: "0.5" });
+              $(`#${this.name}-${clicks + 1}-player${this.player}`).css({
+                opacity: "0.5",
+              });
+              console.log(`#${this.name}-${clicks}-player${this.player}`);
+              // $(`#${event.target.id}`).css({ opacity: "0.5" });
               this.fullyPlaced();
               clicks++;
             }
@@ -89,7 +93,11 @@ export class Ship {
               .css({ backgroundColor: "orange" });
             this.position[e.target.id] = false;
 
-            $(`#${event.target.id}`).css({ opacity: "0.5" });
+            $(`#${this.name}-${clicks + 1}-player${this.player}`).css({
+              opacity: "0.5",
+            });
+
+            console.log(`#${this.name}-${clicks}-player${this.player}`);
             clicks++;
           }
         }

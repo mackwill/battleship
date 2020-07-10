@@ -8,11 +8,6 @@ const placePlayerShips = (player) => {
     player.ships[ship].createShips();
   }
 };
-// const placePlayer2Ships = () => {
-//   for (let ship in PLAYER2.ships) {
-//     PLAYER2.ships[ship].createShips();
-//   }
-// };
 
 const click1Handler = () => {
   console.log("click1");
@@ -70,11 +65,15 @@ const createGuessInput = (playerObj) => {
 };
 
 const mainFunction = function () {
+  const firstPlayer = 1;
+  const secondPlayer = 2;
+  const boardSize = 10;
   createTotalGridDiv();
-  createBoard(10, 1);
-  createBoard(10, 2);
-  createShipDiv(1);
-  createShipDiv(2);
+
+  createBoard(boardSize, firstPlayer);
+  createBoard(boardSize, secondPlayer);
+  createShipDiv(firstPlayer);
+  createShipDiv(secondPlayer);
 
   placePlayerShips(PLAYER1);
 
