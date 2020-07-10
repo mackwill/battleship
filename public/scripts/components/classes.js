@@ -44,9 +44,10 @@ export class Ship {
   };
 
   onClick(event) {
-    $(document).on("click", `.ship-player${this.player}`, (event) => {
+    $(document).on("click", `#${this.name}-wrapper-${this.player}`, (event) => {
       let clicks = Object.keys(this.position).length;
-      $(document).one("click", ".grid-item", (e) => {
+      $(document).one("click", `.grid-item-player${this.player}`, (e) => {
+        console.log("e target", e.target);
         if ($(`#${e.target.id}`).attr("filled") === "false") {
           if (clicks > 0) {
             let firstRow = Object.keys(this.position)[0]

@@ -26,8 +26,8 @@ const createBoard = (boardSize, player) => {
       $(`#player${player}-grid`).append(
         $(document.createElement("div"))
           .attr({
-            class: "grid-item",
-            id: `${String.fromCharCode(colPos)}-${rowPos}`,
+            class: `grid-item grid-item-player${player}`,
+            id: `${String.fromCharCode(colPos)}-${rowPos}-${player}`,
             row: colNum,
             col: rowPos,
             filled: false,
