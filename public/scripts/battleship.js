@@ -32,6 +32,7 @@ const click2Handler = () => {
   }
   PLAYER2.fullyPlaced = true;
   revertCellColor(PLAYER2);
+  $(".guessContainer").attr({ class: "visible" });
 
   return;
 };

@@ -10,6 +10,7 @@ export const PLAYER1 = {
     destroyer: new Ship("destroyer", 2, 1),
   },
   fullyPlaced: false,
+  activeTurn: false,
 };
 
 export const PLAYER2 = {
@@ -22,6 +23,7 @@ export const PLAYER2 = {
     destroyer: new Ship("destroyer", 2, 2),
   },
   fullyPlaced: false,
+  activeTurn: false,
 };
 
 // export { PLAYER1SHIPS };
