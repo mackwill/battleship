@@ -38,8 +38,38 @@ const click2Handler = () => {
   return;
 };
 
+const findKeyOfHitShip = (player, guess) => {
+  for (let ship in player.ships) {
+    Object.keys(player.ships[ship].position).forEach((pos) => {
+      if (pos === guess) {
+        player.ships[ship].position[pos] = true;
+        return;
+      }
+    });
+  }
+};
+
+// Click listener that handles the guess of the current active player, and then switches to the next player after submitting a guess
 const clickGuess = () => {
   if (PLAYER1.activeTurn === true) {
+    const colSelected = document.getElementById("colSelect");
+    const rowSelected = document.getElementById("rowSelect");
+    const colGuess = colSelected.options[colSelected.selectedIndex].value;
+    const rowGuess = rowSelected.options[rowSelected.selectedIndex].value;
+    const guess = `${rowGuess}-${colGuess}-${PLAYER2.playerNum}`;
+
+    if ($(`#${guess}`).attr("filled") === "true") {
+      console.log("Nicolas Cage hit you");
+      $(`#${guess}`).css({ backgroundColor: "orange" });
+      findKeyOfHitShip(PLAYER2, `${guess}`);
+      console.log(PLAYER2);
+      PLAYER1.activeTurn = false;
+      PLAYER2.activeTurn = true;
+    } else {
+      console.log("You missed!");
+    }
+    return;
+  } else if (PLAYER2.activeTurn === true) {
     const colSelected = document.getElementById("colSelect");
     const rowSelected = document.getElementById("rowSelect");
     const colGuess = colSelected.options[colSelected.selectedIndex].value;
@@ -48,10 +78,16 @@ const clickGuess = () => {
 
     if ($(`#${guess}`).attr("filled") === "true") {
       console.log("Nicolas Cage hit you");
+      $(`#${guess}`).css({ backgroundColor: "orange" });
+      findKeyOfHitShip(PLAYER1, `${guess}`);
+      console.log(PLAYER1);
+      PLAYER1.activeTurn = false;
+      PLAYER1.activeTurn = true;
+    } else {
+      console.log("You missed!");
     }
     return;
   }
-  console.log("still works");
 };
 
 const addClickListenerToGuessButton = () => {
