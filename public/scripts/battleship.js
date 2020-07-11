@@ -33,8 +33,29 @@ const click2Handler = () => {
   PLAYER2.fullyPlaced = true;
   revertCellColor(PLAYER2);
   $(".guessContainer").attr({ class: "visible" });
-
+  PLAYER1.activeTurn = true;
+  addClickListenerToGuessButton();
   return;
+};
+
+const clickGuess = () => {
+  if (PLAYER1.activeTurn === true) {
+    const colSelected = document.getElementById("colSelect");
+    const rowSelected = document.getElementById("rowSelect");
+    const colGuess = colSelected.options[colSelected.selectedIndex].value;
+    const rowGuess = rowSelected.options[rowSelected.selectedIndex].value;
+    const guess = `${rowGuess}-${colGuess}-${PLAYER1.playerNum}`;
+
+    if ($(`#${guess}`).attr("filled") === "true") {
+      console.log("Nicolas Cage hit you");
+    }
+    return;
+  }
+  console.log("still works");
+};
+
+const addClickListenerToGuessButton = () => {
+  document.getElementById(`guessButton`).addEventListener("click", clickGuess);
 };
 
 const revertCellColor = (player) => {
@@ -53,7 +74,6 @@ const createGuessInput = (playerObj) => {
     ).innerHTML = `<button type='button' class="btn btn-primary" id="submit-button-${playerObj.playerNum}">Primary </button> `)
   );
 
-  console.log("check condition: ", playerObj === PLAYER1);
   if (playerObj === PLAYER1) {
     document
       .getElementById(`submit-button-${playerObj.playerNum}`)
