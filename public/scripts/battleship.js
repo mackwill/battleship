@@ -42,20 +42,24 @@ const click2Handler = () => {
 
 // Click listener that handles the guess of the current active player, and then switches to the next player after submitting a guess
 
-const findKeyOfHitShip = (player, guess) => {
-  let hitShip = null;
+const areAllShipsSunk = (player) => {
   for (let ship in player.ships) {
-    Object.keys(player.ships[ship].position).forEach((pos) => {
-      console.log("findKeyOfHitShip ship: ", ship);
-      if (pos === guess) {
-        player.ships[ship].position[pos] = true;
-        hitShip = ship;
-      }
-    });
-    if (hitShip) {
-      return hitShip;
+    if (player.ships[ship].sunk === false) {
+      return false;
     }
   }
+  return true;
+};
+
+const findHitShip = (player, guess) => {
+  for (let ship in player.ships) {
+    if (player.ships[ship].position[guess] !== undefined) {
+      player.ships[ship].position[guess] = true;
+      $(`#${guess}`).css({ backgroundColor: "orange" });
+      return ship;
+    }
+  }
+  return false;
 };
 
 const isShipSunk = (player, ship) => {
@@ -64,36 +68,29 @@ const isShipSunk = (player, ship) => {
       return false;
     }
   }
-  // Object.keys(player.ships[ship].position).forEach((elem) => {
-  //   if (player.ships[ship].position[elem] === false) {
-  //     return false;
-  //   }
-  // });
-
-  player.ships.isShipSunk = true;
+  player.ships[ship].sunk = true;
+  console.log(`Player ${player.playerNum} has sunk your ${ship}`);
   return true;
 };
 
-const didPlayerHit = (guess, attackingPlayer, idlePlayer) => {
-  if ($(`#${guess}`).attr("filled") === "true") {
-    $(`#${guess}`).css({ backgroundColor: "orange" });
-    const hitShip = findKeyOfHitShip(idlePlayer, `${guess}`);
+const checkPlayerTurn = (attackingPlayer, idlePlayer, guess) => {
+  const hitShip = findHitShip(idlePlayer, `${guess}`);
 
-    const isSunk = isShipSunk(idlePlayer, hitShip);
-    console.log("isSunk: ", isSunk);
-
-    if (isSunk) {
-      console.log(`Player ${attackingPlayer.playerNum} has sunk your ship!`);
-    } else {
-      console.log(`Player ${attackingPlayer.playerNum} hit your ship!`);
-    }
-  } else {
-    console.log("You missed!");
+  if (hitShip === false) {
+    return false;
   }
-  attackingPlayer.activeTurn = false;
-  idlePlayer.activeTurn = true;
 
-  return;
+  const sunk = isShipSunk(idlePlayer, hitShip);
+  const playerWin = areAllShipsSunk(idlePlayer);
+
+  if (playerWin) {
+    alert(`Congratulations player ${attackingPlayer}, you have won!`);
+    return `Player ${attackingPlayer.playerNum} has won the game!`;
+  } else {
+    attackingPlayer.activeTurn = false;
+    idlePlayer.activeTurn = true;
+    return `Player ${idlePlayer.playerNum} turn`;
+  }
 };
 
 const clickGuess = () => {
@@ -103,17 +100,14 @@ const clickGuess = () => {
   const rowGuess = rowSelected.options[rowSelected.selectedIndex].value;
   if (PLAYER1.activeTurn === true) {
     const guess = `${rowGuess}-${colGuess}-${PLAYER2.playerNum}`;
-    didPlayerHit(guess, PLAYER1, PLAYER2);
+    checkPlayerTurn(PLAYER1, PLAYER2, guess);
+
     return;
   } else if (PLAYER2.activeTurn === true) {
     const guess = `${rowGuess}-${colGuess}-${PLAYER1.playerNum}`;
-    didPlayerHit(guess, PLAYER2, PLAYER1);
+    checkPlayerTurn(PLAYER2, PLAYER1, guess);
   }
   return;
-};
-
-const addClickListenerToGuessButton = () => {
-  document.getElementById(`guessButton`).addEventListener("click", clickGuess);
 };
 
 const revertCellColor = (player) => {
