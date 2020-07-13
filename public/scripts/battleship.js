@@ -2,6 +2,7 @@ import { createTotalGridDiv, createBoard } from "./components/makeBoard.js";
 import { createShipDiv } from "./components/makeShips.js";
 import { PLAYER1, PLAYER2 } from "./components/constants.js";
 import { Ship, Player } from "./components/classes.js";
+// import missedShip from '../assets/miss-ship.png'
 
 const placePlayerShips = (player) => {
   for (let ship in player.ships) {
@@ -34,34 +35,64 @@ const click2Handler = () => {
   revertCellColor(PLAYER2);
   $(".guessContainer").attr({ class: "visible" });
   PLAYER1.activeTurn = true;
-  addClickListenerToGuessButton();
+  // addClickListenerToGuessButton();
+  $("#guessButton").on("click", clickGuess);
   return;
 };
 
 // Click listener that handles the guess of the current active player, and then switches to the next player after submitting a guess
 
 const findKeyOfHitShip = (player, guess) => {
+  let hitShip = null;
   for (let ship in player.ships) {
     Object.keys(player.ships[ship].position).forEach((pos) => {
+      console.log("findKeyOfHitShip ship: ", ship);
       if (pos === guess) {
         player.ships[ship].position[pos] = true;
-        return;
+        hitShip = ship;
       }
     });
+    if (hitShip) {
+      return hitShip;
+    }
   }
 };
 
-const didPlayerHit = (guess, currentPlayer, nextPlayer) => {
+const isShipSunk = (player, ship) => {
+  for (let elem in player.ships[ship].position) {
+    if (player.ships[ship].position[elem] === false) {
+      return false;
+    }
+  }
+  // Object.keys(player.ships[ship].position).forEach((elem) => {
+  //   if (player.ships[ship].position[elem] === false) {
+  //     return false;
+  //   }
+  // });
+
+  player.ships.isShipSunk = true;
+  return true;
+};
+
+const didPlayerHit = (guess, attackingPlayer, idlePlayer) => {
   if ($(`#${guess}`).attr("filled") === "true") {
     $(`#${guess}`).css({ backgroundColor: "orange" });
-    findKeyOfHitShip(PLAYER2, `${guess}`);
-    console.log(PLAYER2);
-    currentPlayer.activeTurn = false;
-    nextPlayer.activeTurn = true;
-    console.log(`Player ${currentPlayer.playerNum} hit your ship!`);
+    const hitShip = findKeyOfHitShip(idlePlayer, `${guess}`);
+
+    const isSunk = isShipSunk(idlePlayer, hitShip);
+    console.log("isSunk: ", isSunk);
+
+    if (isSunk) {
+      console.log(`Player ${attackingPlayer.playerNum} has sunk your ship!`);
+    } else {
+      console.log(`Player ${attackingPlayer.playerNum} hit your ship!`);
+    }
   } else {
     console.log("You missed!");
   }
+  attackingPlayer.activeTurn = false;
+  idlePlayer.activeTurn = true;
+
   return;
 };
 
