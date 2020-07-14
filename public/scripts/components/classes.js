@@ -1,8 +1,4 @@
-export class Player {
-  constructor(player) {
-    (this.player = player), (this.fullyPositioned = false);
-  }
-}
+import { PLAYER1, PLAYER2 } from "./constants.js";
 
 export class Ship {
   constructor(name, size, player) {
@@ -43,61 +39,92 @@ export class Ship {
     }
   };
 
+  findCurrentPosDifs = function (prevCol, prevRow, currentCol, currentRow) {
+    const rowDif = Math.abs(prevRow - currentRow);
+    const colDif = Math.abs(prevCol - currentCol);
+    return { rowDif, colDif };
+  };
+
+  findTotalPosDifs = function (firstCol, firstRow, currentCol, currentRow) {
+    const totalRowDif = Math.abs(firstRow - currentRow);
+    const totalColDif = Math.abs(firstCol - currentCol);
+
+    return { totalRowDif, totalColDif };
+  };
+
+  getGridPositions = function (loggedPosition, currentPosition, clicks) {
+    const firstRow = Object.keys(loggedPosition)[0].split("-")[0].charCodeAt(0);
+    const firstCol = Number(Object.keys(loggedPosition)[0].split("-")[1]);
+
+    const prevRow = Object.keys(loggedPosition)
+      [clicks - 1].split("-")[0]
+      .charCodeAt(0);
+    const prevCol = Number(
+      Object.keys(loggedPosition)[clicks - 1].split("-")[1]
+    );
+
+    const currentRow = currentPosition.split("-")[0].charCodeAt(0);
+    const currentCol = Number(currentPosition.split("-")[1]);
+
+    return { firstRow, firstCol, prevRow, prevCol, currentRow, currentCol };
+  };
+
+  updatePositionedShip = function (target, clicks) {
+    $(`#${target}`).attr("filled", "true").css({ backgroundColor: "orange" });
+    this.position[target] = false;
+
+    $(`#${this.name}-${clicks + 1}-player${this.player}`).css({
+      opacity: "0.5",
+    });
+    if (clicks > 0) {
+      this.fullyPlaced();
+    }
+  };
+
   onClick(event) {
     $(document).on("click", `#${this.name}-wrapper-${this.player}`, (event) => {
+      let currentPlayer = null;
+      if (this.player === 1) {
+        currentPlayer = PLAYER1;
+      } else {
+        currentPlayer = PLAYER2;
+      }
       let clicks = Object.keys(this.position).length;
       $(document).one("click", `.grid-item-player${this.player}`, (e) => {
-        // console.log("e target", e.target);
         if ($(`#${e.target.id}`).attr("filled") === "false") {
           if (clicks > 0) {
-            let firstRow = Object.keys(this.position)[0]
-              .split("-")[0]
-              .charCodeAt(0);
-            let firstCol = Number(Object.keys(this.position)[0].split("-")[1]);
-            let prevRow = Object.keys(this.position)
-              [clicks - 1].split("-")[0]
-              .charCodeAt(0);
-            let prevCol = Number(
-              Object.keys(this.position)[clicks - 1].split("-")[1]
+            const {
+              firstRow,
+              firstCol,
+              prevRow,
+              prevCol,
+              currentRow,
+              currentCol,
+            } = this.getGridPositions(this.position, e.target.id, clicks);
+
+            const { rowDif, colDif } = this.findCurrentPosDifs(
+              prevCol,
+              prevRow,
+              currentCol,
+              currentRow
             );
 
-            let currentRow = e.target.id.split("-")[0].charCodeAt(0);
-            let currentCol = Number(e.target.id.split("-")[1]);
-
-            let rowDif = Math.abs(prevRow - currentRow);
-            let colDif = Math.abs(prevCol - currentCol);
-
-            let totalRowDif = Math.abs(firstRow - currentRow);
-            let totalColDif = Math.abs(firstCol - currentCol);
+            const { totalRowDif, totalColDif } = this.findTotalPosDifs(
+              firstCol,
+              firstRow,
+              currentCol,
+              currentRow
+            );
 
             if (
               (totalColDif === 0 && colDif === 0 && totalRowDif < this.size) ||
               (totalRowDif === 0 && rowDif === 0 && totalColDif < this.size)
             ) {
-              $(`#${e.target.id}`)
-                .attr("filled", "true")
-                .css({ backgroundColor: "orange" });
-              this.position[e.target.id] = false;
-
-              $(`#${this.name}-${clicks + 1}-player${this.player}`).css({
-                opacity: "0.5",
-              });
-              console.log(`#${this.name}-${clicks}-player${this.player}`);
-              // $(`#${event.target.id}`).css({ opacity: "0.5" });
-              this.fullyPlaced();
+              this.updatePositionedShip(e.target.id, clicks);
               clicks++;
             }
           } else {
-            $(`#${e.target.id}`)
-              .attr("filled", "true")
-              .css({ backgroundColor: "orange" });
-            this.position[e.target.id] = false;
-
-            $(`#${this.name}-${clicks + 1}-player${this.player}`).css({
-              opacity: "0.5",
-            });
-
-            console.log(`#${this.name}-${clicks}-player${this.player}`);
+            this.updatePositionedShip(e.target.id, clicks);
             clicks++;
           }
         }
