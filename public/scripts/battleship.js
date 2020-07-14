@@ -1,8 +1,7 @@
 import { createTotalGridDiv, createBoard } from "./components/makeBoard.js";
 import { createShipDiv } from "./components/makeShips.js";
 import { PLAYER1, PLAYER2 } from "./components/constants.js";
-import { Ship, Player } from "./components/classes.js";
-// import missedShip from '../assets/miss-ship.png'
+// import { Player } from "./components/classes.js";
 
 const placePlayerShips = (player) => {
   for (let ship in player.ships) {
@@ -10,38 +9,51 @@ const placePlayerShips = (player) => {
   }
 };
 
+// Activate player 2 ships once all of player 1 ships are placed
+const revertCellColor = (player) => {
+  console.log("revert cell");
+  for (let ship in player.ships) {
+    Object.keys(player.ships[ship].position).forEach((pos) => {
+      $(`#${pos}`).css({ backgroundColor: "lightblue" });
+    });
+  }
+};
+
 const click1Handler = () => {
-  console.log("click1");
-  for (let ship in PLAYER1.ships) {
-    if (PLAYER1.ships[ship].positionComplete === false) {
-      return;
+  if (!PLAYER1.fullyPlaced) {
+    for (let ship in PLAYER1.ships) {
+      if (PLAYER1.ships[ship].positionComplete === false) {
+        return;
+      }
     }
+    PLAYER1.fullyPlaced = true;
+    placePlayerShips(PLAYER2);
+    revertCellColor(PLAYER1);
   }
-  PLAYER1.fullyPlaced = true;
-  placePlayerShips(PLAYER2);
-  revertCellColor(PLAYER1);
 
   return;
 };
 
+// Activate the guess form once all of player 2 ships are placed
 const click2Handler = () => {
-  console.log("click2");
-  for (let ship in PLAYER2.ships) {
-    if (PLAYER2.ships[ship].positionComplete === false) {
-      return;
+  if (!PLAYER2.fullyPlaced) {
+    for (let ship in PLAYER2.ships) {
+      if (PLAYER2.ships[ship].positionComplete === false) {
+        return;
+      }
     }
+    PLAYER2.fullyPlaced = true;
+    revertCellColor(PLAYER2);
+    $(".guessContainer").attr({ class: "visible" });
+    PLAYER1.activeTurn = true;
+    $("#guessButton").on("click", clickGuess);
+    return;
   }
-  PLAYER2.fullyPlaced = true;
-  revertCellColor(PLAYER2);
-  $(".guessContainer").attr({ class: "visible" });
-  PLAYER1.activeTurn = true;
-  // addClickListenerToGuessButton();
-  $("#guessButton").on("click", clickGuess);
-  return;
 };
 
-// Click listener that handles the guess of the current active player, and then switches to the next player after submitting a guess
-
+// Check if ship has been hit, then if ship has been sunk
+// then if all ships have been sunk. If all have been
+// sunk, then end the game. If not, change player turn
 const areAllShipsSunk = (player) => {
   for (let ship in player.ships) {
     if (player.ships[ship].sunk === false) {
@@ -51,6 +63,7 @@ const areAllShipsSunk = (player) => {
   return true;
 };
 
+// Return the hit ship object
 const findHitShip = (player, guess) => {
   for (let ship in player.ships) {
     if (player.ships[ship].position[guess] !== undefined) {
@@ -86,18 +99,17 @@ const checkPlayerTurn = (attackingPlayer, idlePlayer, guess) => {
   if (playerWin) {
     alert(`Congratulations player ${attackingPlayer}, you have won!`);
     return `Player ${attackingPlayer.playerNum} has won the game!`;
-  } else {
-    attackingPlayer.activeTurn = false;
-    idlePlayer.activeTurn = true;
-    return `Player ${idlePlayer.playerNum} turn`;
   }
+
+  attackingPlayer.activeTurn = false;
+  idlePlayer.activeTurn = true;
+  return `Player ${idlePlayer.playerNum} turn`;
 };
 
 const clickGuess = () => {
-  const colSelected = document.getElementById("colSelect");
-  const rowSelected = document.getElementById("rowSelect");
-  const colGuess = colSelected.options[colSelected.selectedIndex].value;
-  const rowGuess = rowSelected.options[rowSelected.selectedIndex].value;
+  const colGuess = $("#colSelect").val();
+  const rowGuess = $("#rowSelect").val();
+
   if (PLAYER1.activeTurn === true) {
     const guess = `${rowGuess}-${colGuess}-${PLAYER2.playerNum}`;
     checkPlayerTurn(PLAYER1, PLAYER2, guess);
@@ -110,15 +122,6 @@ const clickGuess = () => {
   return;
 };
 
-const revertCellColor = (player) => {
-  console.log("revert cell");
-  for (let ship in player.ships) {
-    Object.keys(player.ships[ship].position).forEach((pos) => {
-      $(`#${pos}`).css({ backgroundColor: "lightblue" });
-    });
-  }
-};
-
 const createGuessInput = (playerObj) => {
   $(`.player${playerObj.playerNum}-ship-wrapper`).after(
     ($(
@@ -126,15 +129,9 @@ const createGuessInput = (playerObj) => {
     ).innerHTML = `<button type='button' class="btn btn-primary" id="submit-button-${playerObj.playerNum}">Primary </button> `)
   );
 
-  if (playerObj === PLAYER1) {
-    document
-      .getElementById(`submit-button-${playerObj.playerNum}`)
-      .addEventListener("click", click1Handler);
-  } else {
-    document
-      .getElementById(`submit-button-${playerObj.playerNum}`)
-      .addEventListener("click", click2Handler);
-  }
+  playerObj === PLAYER1
+    ? $(`#submit-button-${playerObj.playerNum}`).on("click", click1Handler)
+    : $(`#submit-button-${playerObj.playerNum}`).on("click", click2Handler);
 };
 
 const mainFunction = function () {
