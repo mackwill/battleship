@@ -11,6 +11,7 @@ export const PLAYER1 = {
   },
   fullyPlaced: false,
   activeTurn: false,
+  activeShip: null,
 };
 
 export const PLAYER2 = {
@@ -24,6 +25,5 @@ export const PLAYER2 = {
   },
   fullyPlaced: false,
   activeTurn: false,
+  activeShip: null,
 };
-
-// export { PLAYER1SHIPS };

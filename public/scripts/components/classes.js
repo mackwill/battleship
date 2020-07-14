@@ -19,9 +19,15 @@ export class Ship {
       })
     );
 
-    document
-      .getElementById(`${this.name}-wrapper-${this.player}`)
-      .addEventListener("click", this.onClick);
+    // document
+    //   .getElementById(`${this.name}-wrapper-${this.player}`)
+    //   .addEventListener("click", this.onClick);
+
+    $(document).on(
+      "click",
+      `#${this.name}-wrapper-${this.player}`,
+      this.onClick
+    );
 
     for (let i = 0; i < this.size; i++) {
       $(`#${this.name}-wrapper-${this.player}`).append(
@@ -39,6 +45,23 @@ export class Ship {
     }
   };
 
+  getGridPositions = function (currentPosition, clicks) {
+    const firstRow = Object.keys(this.position)[0].split("-")[0].charCodeAt(0);
+    const firstCol = Number(Object.keys(this.position)[0].split("-")[1]);
+
+    const prevRow = Object.keys(this.position)
+      [clicks - 1].split("-")[0]
+      .charCodeAt(0);
+    const prevCol = Number(
+      Object.keys(this.position)[clicks - 1].split("-")[1]
+    );
+
+    const currentRow = currentPosition.split("-")[0].charCodeAt(0);
+    const currentCol = Number(currentPosition.split("-")[1]);
+
+    return { firstRow, firstCol, prevRow, prevCol, currentRow, currentCol };
+  };
+
   findCurrentPosDifs = function (prevCol, prevRow, currentCol, currentRow) {
     const rowDif = Math.abs(prevRow - currentRow);
     const colDif = Math.abs(prevCol - currentCol);
@@ -50,23 +73,6 @@ export class Ship {
     const totalColDif = Math.abs(firstCol - currentCol);
 
     return { totalRowDif, totalColDif };
-  };
-
-  getGridPositions = function (loggedPosition, currentPosition, clicks) {
-    const firstRow = Object.keys(loggedPosition)[0].split("-")[0].charCodeAt(0);
-    const firstCol = Number(Object.keys(loggedPosition)[0].split("-")[1]);
-
-    const prevRow = Object.keys(loggedPosition)
-      [clicks - 1].split("-")[0]
-      .charCodeAt(0);
-    const prevCol = Number(
-      Object.keys(loggedPosition)[clicks - 1].split("-")[1]
-    );
-
-    const currentRow = currentPosition.split("-")[0].charCodeAt(0);
-    const currentCol = Number(currentPosition.split("-")[1]);
-
-    return { firstRow, firstCol, prevRow, prevCol, currentRow, currentCol };
   };
 
   updatePositionedShip = function (target, clicks) {
@@ -82,53 +88,13 @@ export class Ship {
   };
 
   onClick(event) {
-    $(document).on("click", `#${this.name}-wrapper-${this.player}`, (event) => {
-      let currentPlayer = null;
-      if (this.player === 1) {
-        currentPlayer = PLAYER1;
-      } else {
-        currentPlayer = PLAYER2;
-      }
-      let clicks = Object.keys(this.position).length;
-      $(document).one("click", `.grid-item-player${this.player}`, (e) => {
-        if ($(`#${e.target.id}`).attr("filled") === "false") {
-          if (clicks > 0) {
-            const {
-              firstRow,
-              firstCol,
-              prevRow,
-              prevCol,
-              currentRow,
-              currentCol,
-            } = this.getGridPositions(this.position, e.target.id, clicks);
-
-            const { rowDif, colDif } = this.findCurrentPosDifs(
-              prevCol,
-              prevRow,
-              currentCol,
-              currentRow
-            );
-
-            const { totalRowDif, totalColDif } = this.findTotalPosDifs(
-              firstCol,
-              firstRow,
-              currentCol,
-              currentRow
-            );
-
-            if (
-              (totalColDif === 0 && colDif === 0 && totalRowDif < this.size) ||
-              (totalRowDif === 0 && rowDif === 0 && totalColDif < this.size)
-            ) {
-              this.updatePositionedShip(e.target.id, clicks);
-              clicks++;
-            }
-          } else {
-            this.updatePositionedShip(e.target.id, clicks);
-            clicks++;
-          }
-        }
-      });
-    });
+    console.log("this");
+    let currentPlayer = null;
+    if (this.player === 1) {
+      currentPlayer = PLAYER1;
+    } else {
+      currentPlayer = PLAYER2;
+    }
+    currentPlayer.activeShip = this;
   }
 }

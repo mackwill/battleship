@@ -144,10 +144,72 @@ const populateRowChoice = (boardSize) => {
 };
 
 const populateColChoice = (boardSize) => {
-  for (let i = 0; i < boardSize; i++) {
+  for (let i = 1; i <= boardSize; i++) {
     $("#colSelect").append(`<option value="${i}">${i}</option>`);
   }
 };
+
+const checkShipPlacement = (activeShip, target) => {
+  console.log(activeShip);
+  let clicks = Object.keys(activeShip.position).length;
+
+  if ($(`#${target}`).attr("filled") === "false") {
+    if (clicks > 0) {
+      const {
+        firstRow,
+        firstCol,
+        prevRow,
+        prevCol,
+        currentRow,
+        currentCol,
+      } = activeShip.getGridPositions(target, clicks);
+
+      const { rowDif, colDif } = activeShip.findCurrentPosDifs(
+        prevCol,
+        prevRow,
+        currentCol,
+        currentRow
+      );
+
+      const { totalRowDif, totalColDif } = activeShip.findTotalPosDifs(
+        firstCol,
+        firstRow,
+        currentCol,
+        currentRow
+      );
+
+      if (
+        (totalColDif === 0 && colDif === 0 && totalRowDif < activeShip.size) ||
+        (totalRowDif === 0 && rowDif === 0 && totalColDif < activeShip.size)
+      ) {
+        activeShip.updatePositionedShip(target, clicks);
+      }
+    } else {
+      activeShip.updatePositionedShip(target, clicks);
+    }
+  }
+};
+
+$(document).on("click", `.grid-item`, (e) => {
+  const player = e.target.id.split("-")[2];
+  let activePlayer = null;
+  if (PLAYER1.activeShip === null || !PLAYER2.activeShip === null) {
+    return;
+  }
+  // console.log("player: ", player);
+
+  if (Number(player) === 1) {
+    activePlayer = PLAYER1;
+  } else {
+    activePlayer = PLAYER2;
+  }
+
+  if (activePlayer.activeShip === null) {
+    return;
+  }
+  const activeShip = activePlayer.activeShip;
+  checkShipPlacement(activeShip, e.target.id);
+});
 
 const mainFunction = function () {
   const firstPlayer = 1;
