@@ -82,7 +82,7 @@ const isShipSunk = (player, ship) => {
     }
   }
   player.ships[ship].sunk = true;
-  console.log(`Player ${player.playerNum} has sunk your ${ship}`);
+  console.log(`Player ${player.playerNum} ${ship} has been sunk`);
   return true;
 };
 
@@ -97,8 +97,11 @@ const checkPlayerTurn = (attackingPlayer, idlePlayer, guess) => {
   const playerWin = areAllShipsSunk(idlePlayer);
 
   if (playerWin) {
-    alert(`Congratulations player ${attackingPlayer}, you have won!`);
-    return `Player ${attackingPlayer.playerNum} has won the game!`;
+    // alert(`Congratulations player ${attackingPlayer}, you have won!`);
+    // $("#win-game-modal").slideDown("slow");
+    $("#win-game-modal").modal("show");
+    // return `Player ${attackingPlayer.playerNum} has won the game!`;
+    return;
   }
 
   attackingPlayer.activeTurn = false;

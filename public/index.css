@@ -58,3 +58,7 @@ body {
   display: flex;
   justify-content: center;
 }
+
+/* #win-game-modal {
+  display: none;
+} */
