@@ -19,36 +19,34 @@ const revertCellColor = (player) => {
   }
 };
 
-const click1Handler = () => {
-  if (!PLAYER1.fullyPlaced) {
-    for (let ship in PLAYER1.ships) {
-      if (PLAYER1.ships[ship].positionComplete === false) {
-        return;
-      }
+const click1Handler = function () {
+  for (let ship in PLAYER1.ships) {
+    if (PLAYER1.ships[ship].positionComplete === false) {
+      return;
     }
-    PLAYER1.fullyPlaced = true;
-    placePlayerShips(PLAYER2);
-    revertCellColor(PLAYER1);
   }
+  PLAYER1.fullyPlaced = true;
+  placePlayerShips(PLAYER2);
+  revertCellColor(PLAYER1);
 
+  $(this).css("display", "none");
   return;
 };
 
 // Activate the guess form once all of player 2 ships are placed
 const click2Handler = () => {
-  if (!PLAYER2.fullyPlaced) {
-    for (let ship in PLAYER2.ships) {
-      if (PLAYER2.ships[ship].positionComplete === false) {
-        return;
-      }
+  for (let ship in PLAYER2.ships) {
+    if (PLAYER2.ships[ship].positionComplete === false) {
+      return;
     }
-    PLAYER2.fullyPlaced = true;
-    revertCellColor(PLAYER2);
-    $(".guessContainer").attr({ class: "visible" });
-    PLAYER1.activeTurn = true;
-    $("#guessButton").on("click", clickGuess);
-    return;
   }
+  PLAYER2.fullyPlaced = true;
+  revertCellColor(PLAYER2);
+  $(".guessContainer").attr({ class: "visible" });
+  PLAYER1.activeTurn = true;
+  $("#guessButton").on("click", clickGuess);
+  $(this).css("display", "none");
+  return;
 };
 
 // Check if ship has been hit, then if ship has been sunk
@@ -97,10 +95,7 @@ const checkPlayerTurn = (attackingPlayer, idlePlayer, guess) => {
   const playerWin = areAllShipsSunk(idlePlayer);
 
   if (playerWin) {
-    // alert(`Congratulations player ${attackingPlayer}, you have won!`);
-    // $("#win-game-modal").slideDown("slow");
     $("#win-game-modal").modal("show");
-    // return `Player ${attackingPlayer.playerNum} has won the game!`;
     return;
   }
 
@@ -137,6 +132,23 @@ const createGuessInput = (playerObj) => {
     : $(`#submit-button-${playerObj.playerNum}`).on("click", click2Handler);
 };
 
+const populateRowChoice = (boardSize) => {
+  let startChar = 65;
+  for (let i = 0; i < boardSize; i++) {
+    $("#rowSelect").append(
+      `<option value="${String.fromCharCode(
+        startChar + i
+      )}">${String.fromCharCode(startChar + i)}</option>`
+    );
+  }
+};
+
+const populateColChoice = (boardSize) => {
+  for (let i = 0; i < boardSize; i++) {
+    $("#colSelect").append(`<option value="${i}">${i}</option>`);
+  }
+};
+
 const mainFunction = function () {
   const firstPlayer = 1;
   const secondPlayer = 2;
@@ -145,11 +157,13 @@ const mainFunction = function () {
 
   createBoard(boardSize, firstPlayer);
   createBoard(boardSize, secondPlayer);
+
   createShipDiv(firstPlayer);
   createShipDiv(secondPlayer);
 
   placePlayerShips(PLAYER1);
-
+  populateColChoice(boardSize);
+  populateRowChoice(boardSize);
   createGuessInput(PLAYER1);
   createGuessInput(PLAYER2);
 };
