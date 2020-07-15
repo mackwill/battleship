@@ -34,18 +34,20 @@ const click1Handler = function () {
 };
 
 // Activate the guess form once all of player 2 ships are placed
-const click2Handler = () => {
+const click2Handler = function () {
   for (let ship in PLAYER2.ships) {
     if (PLAYER2.ships[ship].positionComplete === false) {
       return;
     }
   }
+
   PLAYER2.fullyPlaced = true;
   revertCellColor(PLAYER2);
   $(".guessContainer").attr({ class: "visible" });
   PLAYER1.activeTurn = true;
   $("#guessButton").on("click", clickGuess);
   $(this).css("display", "none");
+
   return;
 };
 
